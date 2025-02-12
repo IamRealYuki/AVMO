@@ -4,15 +4,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Fraction num1 = new Fraction(5, 4);
-        num1.division(num1);
-        num1.print();
-        System.out.println();
         String filePath = "C:/matrix.txt";
+        boolean isStopped = false;
         List<Fraction []> filler = new ArrayList<>();
         try {
             try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -44,40 +42,89 @@ public class Main {
             System.out.println();
         }
         System.out.println();
-
-        for(int i = 0; i < matrix.length; i++) {
-            int setElem = pickSetElem(matrix, i);
-            Fraction[] tmp = matrix[i];
-            matrix[i] = matrix[setElem];
-            matrix[setElem] = tmp;
-            Fraction div = matrix[i][i];
-            for(int c = matrix[i].length - 1; c >= i; c--)
-                matrix[i][c].division(div);
-
-            for(int j = i + 1; j < matrix.length; j++){
-                for(int k = i + 1; k < matrix[i].length; k++) {
-                    Fraction prod = new Fraction(-1);
-                    prod.multiply(matrix[i][k]);
-                    prod.multiply(matrix[j][i]);
-                    matrix[j][k].add(prod);
+        int i = 0, j = 0;
+        while(i < matrix.length && j < matrix[i].length -1) {
+            int setElem = pickSetElem(matrix, i, j);
+            if (matrix[setElem][j].num() == 0) {
+                if (j == matrix[i].length - 2) {
+                    isStopped = true;
+                    break;
                 }
+                j++;
+            } else {
+                Fraction[] tmp = matrix[i];
+                matrix[i] = matrix[setElem];
+                matrix[setElem] = tmp;
+                Fraction div = matrix[i][j];
+                for (int c = matrix[i].length - 1; c >= i; c--)
+                    matrix[i][c].division(div);
+
+                for (Fraction[] fractions : matrix) {
+                    for (Fraction fraction : fractions) fraction.print();
+                    System.out.println();
+                }
+                System.out.println();
+
+                for (int u = 0; u < matrix.length; u++) {
+                    if (u == i)
+                        continue;
+                    for (int k = j + 1; k < matrix[i].length; k++) {
+                        Fraction prod = new Fraction(-1);
+                        prod.multiply(matrix[i][k]);
+                        prod.multiply(matrix[u][j]);
+                        matrix[u][k].add(prod);
+                    }
+                }
+                for (int z = 0; z < matrix.length; z++) {
+                    if (z == i)
+                        continue;
+                    matrix[z][j] = new Fraction(0);
+                }
+                i++;
+                j++;
             }
-            for(int z = i + 1; z < matrix.length; z++){
-                matrix[z][i] = new Fraction(0);
-            }
+        }
 
             for (Fraction[] fractions : matrix) {
                 for (Fraction fraction : fractions) fraction.print();
                 System.out.println();
             }
             System.out.println();
-        }
-    }
 
-    public static int pickSetElem(Fraction [][] matrix, int column) {
-        int elem = column;
+            if(isStopped)
+            {
+                System.out.println("No solutions");
+                return;
+            }
+            System.out.println("Infinite solutions");
+            for(int p = 0; p < matrix.length; p++)
+            {
+                if (Arrays.stream(matrix[p]).allMatch(f -> f.num() == 0))
+                    continue;
+                boolean isFirst = true;
+                for(int o = 0; o < matrix[p].length - 1; o++)
+                {
+                    if(matrix[p][o].num() == 0)
+                        continue;
+                    if(matrix[p][o].num() > 0 && !isFirst) {
+                        System.out.print(" + ");
+                    }
+                    matrix[p][o].print();
+                    System.out.printf("*x%d", o + 1);
+                    isFirst = false;
+                }
+
+                System.out.print(" = ");
+                matrix[p][matrix[p].length - 1].print();
+                System.out.println();
+            }
+        }
+
+
+    public static int pickSetElem(Fraction [][] matrix, int row, int column) {
+        int elem = row;
         double max = Double.MIN_VALUE;
-        for(int i = column; i < matrix.length; i++)
+        for(int i = row; i < matrix.length; i++)
         {
             if(Math.abs(max) < Math.abs(matrix[i][column].num())){
                 max = matrix[i][column].num();
