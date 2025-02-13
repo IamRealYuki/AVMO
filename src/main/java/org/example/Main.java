@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        String filePath = "C:/matrix.txt";
+        String filePath = "src/main/resources/matrix.txt";
         boolean isStopped = false;
         List<Fraction []> filler = new ArrayList<>();
         try {
@@ -46,7 +46,7 @@ public class Main {
         while(i < matrix.length && j < matrix[i].length -1) {
             int setElem = pickSetElem(matrix, i, j);
             if (matrix[setElem][j].num() == 0) {
-                if (j == matrix[i].length - 2) {
+                if (j == matrix[i].length - 2 && matrix[i][j + 1].num() != 0) {
                     isStopped = true;
                     break;
                 }
