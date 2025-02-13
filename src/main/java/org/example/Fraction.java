@@ -73,7 +73,7 @@ public class Fraction {
                 i--;
             }
         }
-        if(this.numerator < 0 && this.denominator < 0)
+        if(this.denominator < 0)
         {
             this.numerator *= -1;
             this.denominator *= -1;
@@ -82,9 +82,16 @@ public class Fraction {
 
     public void print() {
         if(this.denominator != 1 && this.numerator != 0)
-            System.out.print(this.numerator + "/" + this.denominator + " ");
+            System.out.print(" " + this.numerator + "/" + this.denominator + " ");
         else
             System.out.print(this.numerator + " ");
+    }
+
+    public void printAbs() {
+        if(this.denominator != 1 && this.numerator != 0)
+            System.out.print(Math.abs(this.numerator) + "/" + Math.abs(this.denominator) + " ");
+        else
+            System.out.print(Math.abs(this.numerator) + " ");
     }
 
     public double num() {
