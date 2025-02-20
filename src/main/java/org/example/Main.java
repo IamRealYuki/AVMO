@@ -56,6 +56,12 @@ public class Main {
                 matrix[i] = matrix[setElem];
                 matrix[setElem] = tmp;
                 Fraction div = matrix[i][j];
+
+                for (Fraction[] fractions : matrix) {
+                    for (Fraction fraction : fractions) fraction.print();
+                    System.out.println();
+                }
+                System.out.println("\nafter division");
                 for (int c = matrix[i].length - 1; c >= i; c--)
                     matrix[i][c].division(div);
 
@@ -118,6 +124,7 @@ public class Main {
                 matrix[p][matrix[p].length - 1].print();
                 System.out.println();
             }
+            findAllBasicsSolutions(matrix);
         }
 
 
@@ -132,6 +139,45 @@ public class Main {
             }
         }
         return elem;
+    }
+
+    public static int rang(Fraction [][] matrix) {
+        int rang = 0;
+        for (Fraction[] fractions : matrix) {
+            for(int i = 0; i < fractions.length - 1; i++) {
+                if(fractions[i].num() != 0) {
+                    rang++;
+                    break;
+                }
+            }
+        }
+        return rang;
+    }
+
+    public static void findAllBasicsSolutions(Fraction [][] matrix) {
+        int rang = rang(matrix);
+        int Xes = matrix[0].length - 1;
+        List<Integer> permutation = new ArrayList<>();
+        for(int i = 0; i < rang; i++)
+            permutation.add(i + 1);
+        int p = rang;
+        while(p > 0) {
+            if(permutation.get(p - 1) == Xes + p - rang)
+                p--;
+            else {
+                System.out.println(permutation + " p: " + p);
+                permutation.set(p - 1, permutation.get(p - 1) + 1);
+                for(int i = p; i < rang; i++)
+                    permutation.set(i, permutation.get(i - 1) + 1);
+                p = rang;
+                permCheck(permutation);
+            }
+        }
+        System.out.println(permutation + " p: " + p);
+    }
+
+    public static void permCheck(List<Integer> basis) {
+
     }
 
 }
